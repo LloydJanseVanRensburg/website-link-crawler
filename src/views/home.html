@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Web Link Crawler</title>
+    <script src="https://unpkg.com/htmx.org@1.9.5" integrity="sha384-xcuj3WpfgjlKF+FXhSQFQ0ZNr39ln+hwjN3npfM9VBnUskLolQAcN80McRIVOPuO" crossorigin="anonymous"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            padding: 2rem;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+
+        #container {
+            max-width: 700px;
+            margin: 2rem auto;
+            position: relative;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background-color: #f4f4f4;
+            padding: 2rem;
+
+            & input {
+                padding: 8px;
+            }
+
+            & button {
+                padding: 9px;
+                border: none;
+                cursor: pointer;
+                margin-top: 1.3rem;
+                background-color: #000;
+                color: #fff;
+            }
+        }
+
+        #download-zone {
+            padding: 2rem;
+            background-color: #f4f4f4;
+            margin-top: 2rem;
+        }
+
+        #notifications {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 id="header-title">Web Link Crawler</h1>
+
+    <div id="container">
+        <form id="form">
+            <label for="url">Website URL to scape</label>
+            <input type="text" name="url" id="url">
+
+            <label for="target-domain">Website URL to scape</label>
+            <input type="text" name="target-domain" id="target-domain">
+
+            <label for="keywords">Website URL to scape</label>
+            <input type="text" name="keywords" id="keywords">
+
+            <button type="submit" id="submit-btn">Submit</button>
+        </form>
+
+        <div id="download-zone"></div>
+        <div id="notifications"></div>
+    </div>
+</body>
+</html>
