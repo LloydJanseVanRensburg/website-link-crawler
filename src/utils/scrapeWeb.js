@@ -1,21 +1,22 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 import { URL } from "url";
-import fs from "fs";
+import createWorksheet from "./createWorksheet.js";
+import { appendToWorkbook } from "./createWorkbook.js";
+import checkLinkStatus from "./checkLinkStatus.js";
 
 const visitedPages = new Set();
 const nonPageExtensions = /\.(pdf|jpg|jpeg|png|gif|doc|xls|ppt)$/i;
 
-async function scrapeWebsite(url, targetDomain, specificWords) {
+async function scrapeWebsite(url, targetDomain, specificWords, workbook) {
   try {
     if (!visitedPages.has(url)) {
-      console.log(`Page link: ${url}`);
       visitedPages.add(url);
 
       const response = await axios.get(url);
 
       const $ = cheerio.load(response.data);
-
+      const pageTitle = $("title").text();
       const links = [];
 
       $("a").each((index, element) => {
@@ -38,17 +39,29 @@ async function scrapeWebsite(url, targetDomain, specificWords) {
       });
 
       if (targetDomainLinks.length > 0) {
-        // add to Excel sheet
+        let checkedLinks = [];
+
+        for (const link of targetDomainLinks) {
+          const linkStatus = await checkLinkStatus(link);
+          const statusText = linkStatus ? "Good" : "Broken";
+          checkedLinks.push({
+            url: link,
+            status: statusText,
+          });
+        }
+
+        const worksheet = createWorksheet(checkedLinks, url);
+        appendToWorkbook(workbook, worksheet);
       }
 
       for (const link of links) {
         if (new URL(link).hostname === new URL(url).hostname) {
-          await scrapeWebsite(link, targetDomain, specificWords);
+          await scrapeWebsite(link, targetDomain, specificWords, workbook);
         }
       }
     }
   } catch (error) {
-    console.error(`Error while scraping ${url}:`);
+    console.log(error);
   }
 }
 

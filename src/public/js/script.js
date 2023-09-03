@@ -7,14 +7,23 @@ const notifications = document.querySelector("#notifications");
 
 submitBtn.addEventListener("click", async (e) => {
   e.preventDefault();
+  const urlVal = urlInput.value;
+  const targetVal = targetDomainInput.value;
+  const keywordsVal = keywordsInput.value;
+
+  if (!urlVal || !targetVal) {
+    createNotification("error", "Need to provide url and target domain", 5000);
+    return;
+  }
 
   const formData = {
-    url: urlInput.value,
-    targetDomain: targetDomainInput.value,
-    keywords: keywordsInput.value,
+    url: urlVal,
+    targetDomain: targetVal,
+    keywords: keywordsVal,
   };
 
   try {
+    submitBtn.disabled = true;
     createNotification("info", "Processing...");
 
     const res = await fetch("/scrape-website", {
@@ -38,6 +47,8 @@ submitBtn.addEventListener("click", async (e) => {
     createNotification("success", "Done", 5000);
   } catch (e) {
     createNotification("error", "Something went wrong", 5000);
+  } finally {
+    submitBtn.disabled = false;
   }
 });
 
